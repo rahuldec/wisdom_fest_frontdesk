@@ -41,41 +41,54 @@ body {
 .page {
   position: relative; z-index: 1; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
-  padding-top: 28px; padding-bottom: 56px; gap: 20px;
+  padding-top: 0; padding-bottom: 56px; gap: 20px;
 }
 
-/* Site header — prominent, diagonal band */
+/* Site header — split panel */
 .appbar {
   width: 100%;
-  background: linear-gradient(135deg, var(--green) 0%, #1a5c30 60%, var(--green-mid) 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
-  padding: 28px max(28px, env(safe-area-inset-left, 0px)) 64px;
-  padding-right: max(28px, env(safe-area-inset-right, 0px));
+  background: var(--green);
+  display: flex;
+  align-items: stretch;
 }
-.appbar-inner {
-  max-width: 860px; margin: 0 auto;
-  display: flex; align-items: center; gap: 22px;
+.appbar-left {
+  flex: 1;
+  display: flex; align-items: center; gap: 20px;
+  padding: 22px max(28px, env(safe-area-inset-left, 0px)) 22px 28px;
 }
-.appbar-brand { display: flex; align-items: center; gap: 22px; }
 .appbar-logo {
-  width: 88px; height: 88px; border-radius: 22px;
+  width: 68px; height: 68px; border-radius: 18px;
   background: #fff; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.12);
+  box-shadow: 0 4px 18px rgba(0,0,0,.22);
 }
-.appbar-logo img { width: 72px; height: 72px; object-fit: contain; display: block; }
+.appbar-logo img { width: 56px; height: 56px; object-fit: contain; display: block; }
 .appbar-text { display: flex; flex-direction: column; gap: 3px; }
 .appbar-title {
-  color: #fff; font-size: 1.9rem; font-weight: 800; letter-spacing: -.03em;
+  color: #fff; font-size: 1.45rem; font-weight: 800; letter-spacing: -.025em;
   line-height: 1.1; margin: 0;
 }
 .appbar-sub {
-  color: rgba(255,255,255,.82); font-size: .9rem; font-weight: 600;
-  letter-spacing: -.01em;
+  color: rgba(255,255,255,.75); font-size: .82rem; font-weight: 600;
 }
 .appbar-dev {
-  color: rgba(255,255,255,.55); font-size: .76rem; font-weight: 500;
+  color: rgba(255,255,255,.42); font-size: .68rem; font-weight: 500; margin-top: 1px;
 }
+.appbar-right {
+  background: rgba(0,0,0,.22);
+  padding: 18px 32px;
+  display: flex; align-items: center; gap: 28px;
+  border-left: 1px solid rgba(255,255,255,.08);
+}
+.appbar-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.appbar-stat-n {
+  font-size: 1.65rem; font-weight: 800; color: var(--gold); line-height: 1;
+}
+.appbar-stat-l {
+  font-size: .6rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(255,255,255,.45);
+}
+.appbar-stat-div { width: 1px; height: 36px; background: rgba(255,255,255,.12); }
 
 /* Footer */
 .footer {
@@ -325,16 +338,25 @@ body {
 </style>
 
 <div class="appbar">
-  <div class="appbar-inner">
-    <div class="appbar-brand">
-      <div class="appbar-logo">
-        <img src="logo.jpg" alt="Wisdom World School">
-      </div>
-      <div class="appbar-text">
-        <div class="appbar-title">Student Images</div>
-        <div class="appbar-sub">Wisdom World School</div>
-        <div class="appbar-dev">Developed by Okie Dokie</div>
-      </div>
+  <div class="appbar-left">
+    <div class="appbar-logo">
+      <img src="logo.jpg" alt="Wisdom World School">
+    </div>
+    <div class="appbar-text">
+      <div class="appbar-title">Wisdom World School</div>
+      <div class="appbar-sub">Student Images · Front Desk · 2026–27</div>
+      <div class="appbar-dev">Developed by Okie Dokie</div>
+    </div>
+  </div>
+  <div class="appbar-right">
+    <div class="appbar-stat">
+      <div class="appbar-stat-n" id="ff-today">—</div>
+      <div class="appbar-stat-l">Today</div>
+    </div>
+    <div class="appbar-stat-div"></div>
+    <div class="appbar-stat">
+      <div class="appbar-stat-n" id="ff-total">—</div>
+      <div class="appbar-stat-l">Total</div>
     </div>
   </div>
 </div>
@@ -357,9 +379,6 @@ body {
     <div class="sync">
       <span class="dot spin" id="dot"></span>
       <span id="stxt">Loading…</span>
-      <span style="margin-left:10px;padding-left:10px;border-left:1px solid var(--border)">
-        👣 Today: <strong id="ff-today">0</strong> &nbsp;·&nbsp; Total: <strong id="ff-total">0</strong>
-      </span>
     </div>
   </div>
 
