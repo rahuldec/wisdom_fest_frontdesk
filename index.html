@@ -288,13 +288,13 @@ function thumb(url, size='w400') {
 
 function rowTo(r) {
   return {
-    appId:r[3], scholarId:r[4], name:r[5], course:r[6], stream:r[7],
-    section:r[8], addedTime:r[1],
-    father:{name:r[9],photo:r[10]}, mother:{name:r[11],photo:r[12]},
-    guardian:{photo:r[13]},
-    grandfather:{name:r[14],photo:r[15]}, grandmother:{name:r[16],photo:r[17]},
-    sib1:{same:r[18],name:r[19],id:r[20],photo:r[21],aadhar:r[22]},
-    sib2:{same:r[23],name:r[24],id:r[25],photo:r[26],aadhar:r[27]}
+    addedTime:r[0], appId:r[2], scholarId:r[3], name:r[4],
+    course:r[5], stream:r[6], section:r[7],
+    father:{name:r[8],photo:r[9]}, mother:{name:r[10],photo:r[11]},
+    guardian:{photo:r[12]},
+    grandfather:{name:r[13],photo:r[14]}, grandmother:{name:r[15],photo:r[16]},
+    sib1:{same:r[17],name:r[18],id:r[19],photo:r[20],aadhar:r[21]},
+    sib2:{same:r[22],name:r[23],id:r[24],photo:r[25],aadhar:r[26]}
   };
 }
 
@@ -305,7 +305,7 @@ async function fetchData() {
     const res = await fetch(CSV+'&_='+Date.now());
     const txt = await res.text();
     const rows = parseCSV(txt);
-    students = rows.slice(2).filter(r=>r[5]&&r[5].trim()).map(rowTo);
+    students = rows.slice(1).filter(r=>r[4]&&r[4].trim()).map(rowTo);
     dot.className='dot';
     const t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     stxt.textContent=`${students.length} students · synced ${t}`;
