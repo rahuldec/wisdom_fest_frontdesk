@@ -226,7 +226,7 @@ body {
 
   <div class="hdr">
     <div class="logo">
-      <img src="logo.jpg" alt="Wisdom World School" style="width:60px;height:60px;object-fit:contain;">
+      <img src="/_blob/693ca45b711eaaf578981aba4394ec90" alt="Wisdom World School" style="width:60px;height:60px;object-fit:contain;">
     </div>
     <h1>Student Images</h1>
     <p>Wisdom World School · 2026–27</p>
@@ -283,7 +283,7 @@ function parseCSV(txt) {
 
 function thumb(url, size='w400') {
   const m = url && url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=${size}` : null;
+  return m ? `https://lh3.googleusercontent.com/d/${m[1]}=s${size==='w400'?'400':'1200'}` : null;
 }
 
 function rowTo(r) {
