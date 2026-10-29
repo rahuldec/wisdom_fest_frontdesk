@@ -129,32 +129,13 @@ body {
 .dot.spin { background: var(--gold); }
 .dot.err  { background: #ef4444; animation: none; }
 
-/* Results — horizontal scroll strip */
-.results {
-  width: 100%;
-  max-width: none;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-  overflow-x: auto;
-  overflow-y: visible;
-  padding: 4px max(24px, env(safe-area-inset-left, 0px)) 20px;
-  padding-right: max(24px, env(safe-area-inset-right, 0px));
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.results::-webkit-scrollbar { height: 5px; }
-.results::-webkit-scrollbar-track { background: transparent; }
-.results::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+/* Results */
+.results { width: 100%; max-width: 860px; }
 
 /* Empty / no-result */
 .empty {
   background: var(--card); border-radius: 22px; text-align: center;
   padding: 52px 24px; box-shadow: 0 4px 20px rgba(0,0,0,.06);
-  flex: 1; min-width: min(400px, calc(100vw - 48px));
 }
 .empty-icon {
   width: 68px; height: 68px; border-radius: 18px;
@@ -170,16 +151,7 @@ body {
 }
 
 /* ── Profile card ── */
-.pcard {
-  background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow);
-  flex-shrink: 0;
-  width: min(520px, calc(100vw - 48px));
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
-  scroll-snap-align: start;
-  display: flex; flex-direction: column;
-}
-.pbody { flex: 1; overflow-y: auto; }
+.pcard { background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
 
 /* compact header */
 .phead {
@@ -212,16 +184,44 @@ body {
 }
 .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── PHOTO GRID: card style ── */
+/* ── Animations ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.pcard { animation: slideUp .38s cubic-bezier(.22,1,.36,1) both; }
+.photo-card { opacity: 0; animation: slideInRight .4s cubic-bezier(.22,1,.36,1) both; }
+
+/* ── PHOTO CAROUSEL: horizontal slide ── */
+.photo-carousel {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+.photo-carousel::-webkit-scrollbar { display: none; }
+
+/* ── PHOTO GRID: card style (siblings only) ── */
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
 }
 .photo-card {
   background: var(--card); border-radius: 14px; overflow: hidden;
   box-shadow: 0 2px 14px rgba(0,0,0,.08); border: 1px solid var(--border);
   cursor: pointer; transition: box-shadow .2s, transform .2s;
+  /* carousel sizing */
+  flex-shrink: 0;
+  width: clamp(160px, calc(50% - 7px), 260px);
+  scroll-snap-align: start;
 }
 .photo-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.14); transform: translateY(-2px); }
 .photo-card.no-click { cursor: default; }
@@ -400,18 +400,19 @@ window.imgErr = function(img) {
   card.onclick = null;
 };
 
-function photoCard(photoUrl, role, name, sub) {
+function photoCard(photoUrl, role, name, sub, idx = 0) {
   const t = thumbUrl(photoUrl), f = fullUrl(photoUrl);
   const lbl = (role + (name ? ' – ' + name : '')).replace(/'/g, '&#39;');
+  const delay = `animation-delay:${idx * 0.09 + 0.15}s`;
   const info = `<div class="photo-card-info">
     <div class="photo-card-role">${role}</div>
     ${name ? `<div class="photo-card-name">${name}</div>` : ''}
     ${sub  ? `<div class="photo-card-sub">${sub}</div>`   : ''}
   </div>`;
   if (!t) {
-    return `<div class="photo-card no-click">${NO_IMG}${info}</div>`;
+    return `<div class="photo-card no-click" style="${delay}">${NO_IMG}${info}</div>`;
   }
-  return `<div class="photo-card" onclick="lb('${f}','${lbl}')">
+  return `<div class="photo-card" style="${delay}" onclick="lb('${f}','${lbl}')">
     <img class="photo-card-img" src="${t}" alt="${role}" loading="lazy" onerror="imgErr(this)">
     ${info}
   </div>`;
@@ -438,11 +439,11 @@ function sibEl(s) {
 
 function studentEl(s) {
   const familyPhotos = [
-    photoCard(s.father.photo,      'Father',      s.father.name, ''),
-    photoCard(s.mother.photo,      'Mother',      s.mother.name, ''),
-    s.grandfather.photo ? photoCard(s.grandfather.photo, 'Grandfather', s.grandfather.name, '') : '',
-    s.grandmother.photo ? photoCard(s.grandmother.photo, 'Grandmother', s.grandmother.name, '') : '',
-    s.guardian.photo    ? photoCard(s.guardian.photo,    'Guardian',    '',                  '') : ''
+    photoCard(s.father.photo,      'Father',      s.father.name, '', 0),
+    photoCard(s.mother.photo,      'Mother',      s.mother.name, '', 1),
+    s.grandfather.photo ? photoCard(s.grandfather.photo, 'Grandfather', s.grandfather.name, '', 2) : '',
+    s.grandmother.photo ? photoCard(s.grandmother.photo, 'Grandmother', s.grandmother.name, '', 3) : '',
+    s.guardian.photo    ? photoCard(s.guardian.photo,    'Guardian',    '',                  '', 4) : ''
   ].filter(Boolean).join('');
 
   const sibs = [sibEl(s.sib1), sibEl(s.sib2)].filter(Boolean).join('');
@@ -465,7 +466,7 @@ function studentEl(s) {
     <div class="pbody">
       <div>
         <div class="sec-title">Family Photographs</div>
-        <div class="photo-grid">${familyPhotos}</div>
+        <div class="photo-carousel">${familyPhotos}</div>
       </div>
       ${sibs ? `<div><div class="sec-title">Siblings</div><div style="display:flex;flex-direction:column;gap:12px">${sibs}</div></div>` : ''}
     </div>
@@ -505,7 +506,7 @@ function render(query) {
     </div>`;
     return;
   }
-  area.innerHTML = hits.map(studentEl).join('');
+  area.innerHTML = hits.map(studentEl).join('<div style="height:16px"></div>');
 }
 
 window.lb = (src, lbl) => {
@@ -517,7 +518,13 @@ document.getElementById('lclose').onclick = () => document.getElementById('lbox'
 document.getElementById('lbox').onclick = e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); };
 
 const qi = document.getElementById('q'), xb = document.getElementById('xbtn');
-qi.addEventListener('input', () => { xb.hidden = !qi.value; render(qi.value); });
+let _st;
+qi.addEventListener('input', () => {
+  xb.hidden = !qi.value;
+  clearTimeout(_st);
+  if (!qi.value) { render(''); return; }
+  _st = setTimeout(() => render(qi.value), 380);
+});
 xb.onclick = () => { qi.value = ''; xb.hidden = true; render(''); qi.focus(); };
 
 fetchData();
