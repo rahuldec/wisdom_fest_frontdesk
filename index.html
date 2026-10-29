@@ -1,5 +1,6 @@
 <title>Wisdom Student Images</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/png" href="okie-dokie.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -47,16 +48,25 @@ body {
   padding-top: 32px; padding-bottom: 56px; gap: 18px;
 }
 
-/* Header */
-.hdr { text-align: center; color: #fff; }
-.logo {
-  width: 64px; height: 64px; background: #fff; border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 12px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.22), 0 0 0 5px rgba(255,255,255,.14);
+/* Navbar */
+.navbar {
+  width: 100%; max-width: 860px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px;
 }
-.hdr h1 { margin: 0 0 4px; font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; }
-.hdr p  { margin: 0; font-size: .85rem; opacity: .82; font-weight: 500; }
+.nav-logo {
+  width: 68px; height: 68px; background: #fff; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22), 0 0 0 5px rgba(255,255,255,.14);
+  flex-shrink: 0;
+}
+.nav-logo img { width: 56px; height: 56px; object-fit: contain; }
+
+/* Footer */
+.footer {
+  margin-top: 8px; font-size: .78rem; color: rgba(255,255,255,.7);
+  font-weight: 500; letter-spacing: .01em;
+}
 
 /* Search card */
 .s-card {
@@ -226,12 +236,13 @@ body {
 <div class="band"></div>
 <div class="page">
 
-  <div class="hdr">
-    <div class="logo">
-      <img src="logo.jpg" alt="Wisdom World School" style="width:52px;height:52px;object-fit:contain;">
+  <div class="navbar">
+    <div class="nav-logo">
+      <img src="logo.jpg" alt="Wisdom World School">
     </div>
-    <h1>Student Images</h1>
-    <p>Wisdom World School · 2026–27</p>
+    <div class="nav-logo">
+      <img src="okie-dokie.png" alt="Okie Dokie">
+    </div>
   </div>
 
   <div class="s-card">
@@ -254,6 +265,7 @@ body {
   </div>
 
   <div class="results" id="results"></div>
+  <div class="footer">Crafted with ❤️ by Okie Dokie</div>
 </div>
 
 <div class="lbox" id="lbox">
