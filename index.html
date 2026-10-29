@@ -171,12 +171,11 @@ body {
 
 /* ── Profile card ── */
 .pcard {
-  background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow);
+  background: var(--card); border-radius: 20px; box-shadow: var(--shadow);
   flex-shrink: 0;
   width: min(520px, calc(100vw - 48px));
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
   scroll-snap-align: start;
+  overflow: hidden;
 }
 
 /* compact header */
@@ -202,7 +201,7 @@ body {
 .ptag.g { background: var(--gold); color: #3a2600; }
 
 /* body */
-.pbody { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 18px; }
+.pbody { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
 
 .sec-title {
   font-size: .63rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
@@ -225,11 +224,11 @@ body {
 /* ── PHOTO CAROUSEL: horizontal slide ── */
 .photo-carousel {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 6px;
+  padding: 0 0 10px;
   scrollbar-width: none;
 }
 .photo-carousel::-webkit-scrollbar { display: none; }
@@ -241,24 +240,23 @@ body {
   gap: 12px;
 }
 .photo-card {
-  background: var(--card); border-radius: 14px; overflow: hidden;
+  background: var(--card); border-radius: 16px; overflow: hidden;
   box-shadow: 0 2px 14px rgba(0,0,0,.08); border: 1px solid var(--border);
   cursor: pointer; transition: box-shadow .2s, transform .2s;
-  /* carousel sizing */
   flex-shrink: 0;
-  width: clamp(160px, calc(50% - 7px), 260px);
+  width: clamp(180px, 38vw, 260px);
   scroll-snap-align: start;
 }
 .photo-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.14); transform: translateY(-2px); }
 .photo-card.no-click { cursor: default; }
 .photo-card.no-click:hover { transform: none; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
 .photo-card-img {
-  width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+  width: 100%; height: 280px; object-fit: cover; display: block;
   transition: transform .25s;
 }
 .photo-card:hover .photo-card-img { transform: scale(1.04); }
 .photo-card-placeholder {
-  width: 100%; aspect-ratio: 3/4;
+  width: 100%; height: 280px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 8px; background: var(--bg); color: var(--muted);
 }
@@ -444,35 +442,27 @@ function photoCard(photoUrl, role, name, sub, idx = 0) {
   </div>`;
 }
 
-function sibEl(s) {
-  if (!s.name && !s.same) return '';
-  if (s.same === 'No Sibling') return '';
+function sibPhotos(s, startIdx) {
+  if (!s.name && !s.same) return [];
+  if (s.same === 'No Sibling') return [];
+  const sub = (s.same === 'Yes' ? '✓ Same school' : 'Other school') + (s.id ? ' · ' + s.id : '');
   const cards = [
-    photoCard(s.photo,  'Photo',  s.name, s.id ? 'ID: ' + s.id : ''),
-    s.aadhar ? photoCard(s.aadhar, 'Aadhar', s.name, s.id ? 'ID: ' + s.id : '') : ''
-  ].filter(Boolean).join('');
-  return `<div class="sib-card">
-    <div class="sib-head">
-      <div>
-        <div class="sib-name">${s.name || '—'}</div>
-        ${s.id ? `<div class="sib-id">${s.id}</div>` : ''}
-      </div>
-      <span class="same-badge${s.same==='Yes' ? '' : ' n'}">${s.same==='Yes' ? '✓ Same school' : 'Other school'}</span>
-    </div>
-    ${cards ? `<div class="photo-grid">${cards}</div>` : ''}
-  </div>`;
+    photoCard(s.photo,  'Sibling', s.name, sub, startIdx),
+    s.aadhar ? photoCard(s.aadhar, 'Sibling Aadhar', s.name, sub, startIdx + 1) : ''
+  ];
+  return cards.filter(Boolean);
 }
 
 function studentEl(s) {
-  const familyPhotos = [
-    photoCard(s.father.photo,      'Father',      s.father.name, '', 0),
-    photoCard(s.mother.photo,      'Mother',      s.mother.name, '', 1),
+  const allPhotos = [
+    photoCard(s.father.photo,      'Father',      s.father.name,      '', 0),
+    photoCard(s.mother.photo,      'Mother',      s.mother.name,      '', 1),
     s.grandfather.photo ? photoCard(s.grandfather.photo, 'Grandfather', s.grandfather.name, '', 2) : '',
     s.grandmother.photo ? photoCard(s.grandmother.photo, 'Grandmother', s.grandmother.name, '', 3) : '',
-    s.guardian.photo    ? photoCard(s.guardian.photo,    'Guardian',    '',                  '', 4) : ''
+    s.guardian.photo    ? photoCard(s.guardian.photo,    'Guardian',    '',                  '', 4) : '',
+    ...sibPhotos(s.sib1, 5),
+    ...sibPhotos(s.sib2, 7)
   ].filter(Boolean).join('');
-
-  const sibs = [sibEl(s.sib1), sibEl(s.sib2)].filter(Boolean).join('');
 
   return `<div class="pcard">
     <div class="phead">
@@ -490,11 +480,8 @@ function studentEl(s) {
       </div>
     </div>
     <div class="pbody">
-      <div>
-        <div class="sec-title">Family Photographs</div>
-        <div class="photo-carousel">${familyPhotos}</div>
-      </div>
-      ${sibs ? `<div><div class="sec-title">Siblings</div><div style="display:flex;flex-direction:column;gap:12px">${sibs}</div></div>` : ''}
+      <div class="sec-title">Family Photographs</div>
+      <div class="photo-carousel">${allPhotos}</div>
     </div>
   </div>`;
 }
