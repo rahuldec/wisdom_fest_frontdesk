@@ -357,6 +357,9 @@ body {
     <div class="sync">
       <span class="dot spin" id="dot"></span>
       <span id="stxt">Loading…</span>
+      <span style="margin-left:10px;padding-left:10px;border-left:1px solid var(--border)">
+        👣 Today: <strong id="ff-today">0</strong> &nbsp;·&nbsp; Total: <strong id="ff-total">0</strong>
+      </span>
     </div>
   </div>
 
@@ -513,6 +516,30 @@ function studentEl(s) {
   </div>`;
 }
 
+/* ── Footfall ── */
+const FF_TODAY_KEY = 'ff_' + new Date().toISOString().split('T')[0];
+const FF_TOTAL_KEY = 'ff_total';
+
+function loadFootfall() {
+  try {
+    document.getElementById('ff-today').textContent = localStorage.getItem(FF_TODAY_KEY) || 0;
+    document.getElementById('ff-total').textContent = localStorage.getItem(FF_TOTAL_KEY) || 0;
+  } catch(e) {}
+}
+
+function trackFootfall() {
+  try {
+    const today = (parseInt(localStorage.getItem(FF_TODAY_KEY) || '0')) + 1;
+    const total = (parseInt(localStorage.getItem(FF_TOTAL_KEY) || '0')) + 1;
+    localStorage.setItem(FF_TODAY_KEY, today);
+    localStorage.setItem(FF_TOTAL_KEY, total);
+    document.getElementById('ff-today').textContent = today;
+    document.getElementById('ff-total').textContent = total;
+  } catch(e) {}
+}
+
+loadFootfall();
+
 function render(query) {
   const area = document.getElementById('results');
   const q = (query || '').trim().toLowerCase();
@@ -547,6 +574,7 @@ function render(query) {
     return;
   }
   area.innerHTML = hits.map(studentEl).join('');
+  trackFootfall();
 }
 
 window.lb = (src, lbl) => {
