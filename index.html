@@ -249,15 +249,10 @@ body {
 
 /* ── PHOTO CAROUSEL: horizontal slide ── */
 .photo-carousel {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 0 10px;
-  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
 }
-.photo-carousel::-webkit-scrollbar { display: none; }
 
 /* ── PHOTO GRID: card style (siblings only) ── */
 .photo-grid {
@@ -269,9 +264,6 @@ body {
   background: var(--card); border-radius: 16px; overflow: hidden;
   box-shadow: 0 2px 14px rgba(0,0,0,.08); border: 1px solid var(--border);
   cursor: pointer; transition: box-shadow .2s, transform .2s;
-  flex-shrink: 0;
-  width: clamp(200px, calc(33% - 8px), 280px);
-  scroll-snap-align: start;
 }
 .photo-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.14); transform: translateY(-2px); }
 .photo-card.no-click { cursor: default; }
