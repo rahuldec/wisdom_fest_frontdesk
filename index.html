@@ -170,12 +170,28 @@ body {
 }
 
 /* ── Profile card ── */
+/* student-wrap: the flex snap item in .results */
+.student-wrap {
+  flex-shrink: 0;
+  width: min(480px, calc(100vw - 48px));
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 .pcard {
   background: var(--card); border-radius: 20px; box-shadow: var(--shadow);
-  flex-shrink: 0;
-  width: min(520px, calc(100vw - 48px));
-  scroll-snap-align: start;
-  overflow: hidden;
+  width: 100%; overflow: hidden;
+}
+.photo-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* carousel inside strip can overflow to show partial next card */
+.photo-strip .photo-carousel {
+  margin-right: -60px;
+  padding-right: 60px;
 }
 
 /* compact header */
@@ -218,7 +234,7 @@ body {
   from { opacity: 0; transform: translateX(28px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-.pcard { animation: slideUp .38s cubic-bezier(.22,1,.36,1) both; }
+.student-wrap { animation: slideUp .38s cubic-bezier(.22,1,.36,1) both; }
 .photo-card { opacity: 0; animation: slideInRight .4s cubic-bezier(.22,1,.36,1) both; }
 
 /* ── PHOTO CAROUSEL: horizontal slide ── */
@@ -464,22 +480,24 @@ function studentEl(s) {
     ...sibPhotos(s.sib2, 7)
   ].filter(Boolean).join('');
 
-  return `<div class="pcard">
-    <div class="phead">
-      <div class="gold-bar"></div>
-      <div class="prow1">
-        <span class="badge">${s.scholarId}</span>
-        <span class="badge gold">${s.appId}</span>
-      </div>
-      <div class="pname">${s.name}</div>
-      <div class="ptags">
-        <span class="ptag g">${s.course}</span>
-        ${s.stream && s.stream !== s.course ? `<span class="ptag">${s.stream}</span>` : ''}
-        <span class="ptag">${s.section}</span>
-        <span class="ptag" style="opacity:.7;font-weight:500">${s.addedTime.split(' ')[0]}</span>
+  return `<div class="student-wrap">
+    <div class="pcard">
+      <div class="phead">
+        <div class="gold-bar"></div>
+        <div class="prow1">
+          <span class="badge">${s.scholarId}</span>
+          <span class="badge gold">${s.appId}</span>
+        </div>
+        <div class="pname">${s.name}</div>
+        <div class="ptags">
+          <span class="ptag g">${s.course}</span>
+          ${s.stream && s.stream !== s.course ? `<span class="ptag">${s.stream}</span>` : ''}
+          <span class="ptag">${s.section}</span>
+          <span class="ptag" style="opacity:.7;font-weight:500">${s.addedTime.split(' ')[0]}</span>
+        </div>
       </div>
     </div>
-    <div class="pbody">
+    <div class="photo-strip">
       <div class="sec-title">Family Photographs</div>
       <div class="photo-carousel">${allPhotos}</div>
     </div>
@@ -519,7 +537,7 @@ function render(query) {
     </div>`;
     return;
   }
-  area.innerHTML = hits.map(studentEl).join('<div style="height:16px"></div>');
+  area.innerHTML = hits.map(studentEl).join('');
 }
 
 window.lb = (src, lbl) => {
