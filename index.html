@@ -14,8 +14,6 @@
   --muted: #5a7060;
   --border: #dce8de;
   --shadow: 0 20px 50px -12px rgba(0,0,0,0.15);
-  --thumb-w: 200px;
-  --thumb-h: 264px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -155,54 +153,53 @@ body {
 }
 .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── PHOTO STRIP: fixed-size thumbnails ── */
-.photo-strip { display: flex; flex-wrap: wrap; gap: 10px; }
-
-.thumb-item { display: flex; flex-direction: column; gap: 4px; align-items: center; }
-
-.thumb-frame {
-  width: var(--thumb-w);
-  height: var(--thumb-h);
-  border-radius: 9px;
-  overflow: hidden;
-  border: 1.5px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  flex-shrink: 0;
-  position: relative;
+/* ── PHOTO GRID: card style ── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
 }
-.thumb-frame img {
-  width: 100%; height: 100%; object-fit: cover;
-  display: block; transition: transform .25s;
+.photo-card {
+  background: var(--card); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,.08); border: 1px solid var(--border);
+  cursor: pointer; transition: box-shadow .2s, transform .2s;
 }
-.thumb-frame:hover img { transform: scale(1.06); }
-.thumb-empty {
-  width: 100%; height: 100%;
+.photo-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.14); transform: translateY(-2px); }
+.photo-card.no-click { cursor: default; }
+.photo-card.no-click:hover { transform: none; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+.photo-card-img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+  transition: transform .25s;
+}
+.photo-card:hover .photo-card-img { transform: scale(1.04); }
+.photo-card-placeholder {
+  width: 100%; aspect-ratio: 3/4;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; color: var(--muted);
+  gap: 8px; background: var(--bg); color: var(--muted);
 }
-.thumb-empty svg { opacity: .4; }
-.thumb-empty span { font-size: .6rem; }
-.thumb-name {
-  font-size: .68rem; font-weight: 700; color: var(--text);
-  text-align: center; width: var(--thumb-w); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+.photo-card-placeholder svg { opacity: .35; }
+.photo-card-placeholder span { font-size: .72rem; font-weight: 500; }
+.photo-card-info { padding: 10px 12px 12px; }
+.photo-card-role {
+  font-size: .72rem; font-weight: 700; color: var(--gold);
+  text-transform: uppercase; letter-spacing: .06em;
 }
-.thumb-role {
-  font-size: .6rem; color: var(--muted); text-align: center;
-  width: var(--thumb-w); margin-top: -2px;
+.photo-card-name {
+  font-size: .82rem; font-weight: 600; color: var(--text);
+  margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.photo-card-sub { font-size: .7rem; color: var(--muted); margin-top: 2px; }
 
-/* sibling strip */
+/* sibling section */
 .sib-card {
-  background: var(--bg); border-radius: 12px; padding: 12px 14px;
+  background: var(--bg); border-radius: 14px; padding: 14px 16px;
   border: 1.5px solid var(--border);
 }
-.sib-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.sib-name { font-weight: 700; font-size: .88rem; }
-.sib-id   { font-size: .68rem; color: var(--muted); margin-top: 1px; }
+.sib-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.sib-name { font-weight: 700; font-size: .9rem; }
+.sib-id   { font-size: .7rem; color: var(--muted); margin-top: 2px; }
 .same-badge {
-  font-size: .63rem; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+  font-size: .63rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
   background: #dcfce7; color: #166534;
 }
 .same-badge.n { background: #fee2e2; color: #991b1b; }
@@ -324,33 +321,39 @@ async function fetchData() {
   }
 }
 
+const NO_IMG = `<div class="photo-card-placeholder"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg><span>No Image</span></div>`;
+
 window.imgErr = function(img) {
-  const f = img.closest('.thumb-frame');
-  if (!f) return;
-  f.innerHTML = '<div class="thumb-empty"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg><span>No photo</span></div>';
-  f.style.cursor = 'default';
-  f.onclick = null;
+  const card = img.closest('.photo-card');
+  if (!card) return;
+  img.replaceWith(document.createRange().createContextualFragment(NO_IMG));
+  card.classList.add('no-click');
+  card.onclick = null;
 };
-function thumbEl(photoUrl, role, name) {
+
+function photoCard(photoUrl, role, name, sub) {
   const t = thumbUrl(photoUrl), f = fullUrl(photoUrl);
   const lbl = (role + (name ? ' – ' + name : '')).replace(/'/g, '&#39;');
-  return `<div class="thumb-item">
-    <div class="thumb-frame"${t ? ` onclick="lb('${f}','${lbl}')"` : ''}>
-      ${t
-        ? `<img src="${t}" alt="${role}" loading="lazy" onerror="imgErr(this)">`
-        : `<div class="thumb-empty"><svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg><span>No photo</span></div>`}
-    </div>
-    ${name ? `<div class="thumb-name">${name}</div>` : ''}
-    <div class="thumb-role">${role}</div>
+  const info = `<div class="photo-card-info">
+    <div class="photo-card-role">${role}</div>
+    ${name ? `<div class="photo-card-name">${name}</div>` : ''}
+    ${sub  ? `<div class="photo-card-sub">${sub}</div>`   : ''}
+  </div>`;
+  if (!t) {
+    return `<div class="photo-card no-click">${NO_IMG}${info}</div>`;
+  }
+  return `<div class="photo-card" onclick="lb('${f}','${lbl}')">
+    <img class="photo-card-img" src="${t}" alt="${role}" loading="lazy" onerror="imgErr(this)">
+    ${info}
   </div>`;
 }
 
-function sibEl(s, n) {
+function sibEl(s) {
   if (!s.name && !s.same) return '';
   if (s.same === 'No Sibling') return '';
-  const photos = [
-    s.photo  ? thumbEl(s.photo,  'Photo',  s.name) : '',
-    s.aadhar ? thumbEl(s.aadhar, 'Aadhar', s.name) : ''
+  const cards = [
+    photoCard(s.photo,  'Photo',  s.name, s.id ? 'ID: ' + s.id : ''),
+    s.aadhar ? photoCard(s.aadhar, 'Aadhar', s.name, s.id ? 'ID: ' + s.id : '') : ''
   ].filter(Boolean).join('');
   return `<div class="sib-card">
     <div class="sib-head">
@@ -360,20 +363,20 @@ function sibEl(s, n) {
       </div>
       <span class="same-badge${s.same==='Yes' ? '' : ' n'}">${s.same==='Yes' ? '✓ Same school' : 'Other school'}</span>
     </div>
-    ${photos ? `<div class="photo-strip">${photos}</div>` : ''}
+    ${cards ? `<div class="photo-grid">${cards}</div>` : ''}
   </div>`;
 }
 
 function studentEl(s) {
   const familyPhotos = [
-    thumbEl(s.father.photo,      'Father',      s.father.name),
-    thumbEl(s.mother.photo,      'Mother',      s.mother.name),
-    s.grandfather.photo ? thumbEl(s.grandfather.photo, 'Grandfather', s.grandfather.name) : '',
-    s.grandmother.photo ? thumbEl(s.grandmother.photo, 'Grandmother', s.grandmother.name) : '',
-    s.guardian.photo    ? thumbEl(s.guardian.photo,    'Guardian',    '')                 : ''
+    photoCard(s.father.photo,      'Father',      s.father.name, ''),
+    photoCard(s.mother.photo,      'Mother',      s.mother.name, ''),
+    s.grandfather.photo ? photoCard(s.grandfather.photo, 'Grandfather', s.grandfather.name, '') : '',
+    s.grandmother.photo ? photoCard(s.grandmother.photo, 'Grandmother', s.grandmother.name, '') : '',
+    s.guardian.photo    ? photoCard(s.guardian.photo,    'Guardian',    '',                  '') : ''
   ].filter(Boolean).join('');
 
-  const sibs = [sibEl(s.sib1, 1), sibEl(s.sib2, 2)].filter(Boolean).join('');
+  const sibs = [sibEl(s.sib1), sibEl(s.sib2)].filter(Boolean).join('');
 
   return `<div class="pcard">
     <div class="phead">
@@ -393,9 +396,9 @@ function studentEl(s) {
     <div class="pbody">
       <div>
         <div class="sec-title">Family Photographs</div>
-        <div class="photo-strip">${familyPhotos}</div>
+        <div class="photo-grid">${familyPhotos}</div>
       </div>
-      ${sibs ? `<div><div class="sec-title">Siblings</div><div style="display:flex;flex-direction:column;gap:10px">${sibs}</div></div>` : ''}
+      ${sibs ? `<div><div class="sec-title">Siblings</div><div style="display:flex;flex-direction:column;gap:12px">${sibs}</div></div>` : ''}
     </div>
   </div>`;
 }
