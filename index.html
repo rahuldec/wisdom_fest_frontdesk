@@ -170,54 +170,64 @@ body {
 }
 
 /* ── Profile card ── */
-/* student-wrap: the flex snap item in .results */
 .student-wrap {
   flex-shrink: 0;
-  width: min(480px, calc(100vw - 48px));
+  width: min(900px, calc(100vw - 48px));
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 .pcard {
-  background: var(--card); border-radius: 20px; box-shadow: var(--shadow);
-  width: 100%; overflow: hidden;
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 .photo-strip {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-/* carousel inside strip can overflow to show partial next card */
-.photo-strip .photo-carousel {
-  margin-right: -60px;
-  padding-right: 60px;
+  gap: 10px;
 }
 
-/* compact header */
+/* ── Student info banner ── */
 .phead {
-  background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
-  padding: 18px 22px 26px; position: relative;
+  background: linear-gradient(135deg, var(--green) 0%, #1a6b38 55%, var(--green-mid) 100%);
+  padding: 26px 32px 28px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 28px;
 }
-.phead::after {
-  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
-  height: 18px; background: var(--card); border-radius: 18px 18px 0 0;
+.phead-icon {
+  flex-shrink: 0;
+  width: 64px; height: 64px; border-radius: 16px;
+  background: rgba(255,255,255,.14);
+  border: 2px solid rgba(255,255,255,.22);
+  display: flex; align-items: center; justify-content: center;
+}
+.phead-icon svg { opacity: .8; }
+.phead-info { flex: 1; min-width: 0; }
+.phead-ids {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;
 }
 .gold-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
-.prow1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
 .badge {
   background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.28);
-  border-radius: 8px; padding: 2px 10px; font-size: .68rem; font-weight: 700;
-  letter-spacing: .05em; color: #fff; text-transform: uppercase;
+  border-radius: 8px; padding: 3px 11px; font-size: .68rem; font-weight: 700;
+  letter-spacing: .06em; color: #fff; text-transform: uppercase;
 }
 .badge.gold { background: var(--gold); border-color: var(--gold); color: #3a2600; }
-.pname { color: #fff; font-size: 1.55rem; font-weight: 800; margin: 0 0 8px; letter-spacing: -.02em; }
+.pname {
+  color: #fff; font-size: 2rem; font-weight: 900; margin: 0 0 10px;
+  letter-spacing: -.03em; line-height: 1;
+}
 .ptags { display: flex; gap: 6px; flex-wrap: wrap; }
-.ptag  { background: rgba(255,255,255,.12); color: rgba(255,255,255,.88); border-radius: 5px; padding: 2px 9px; font-size: .72rem; font-weight: 600; }
+.ptag  {
+  background: rgba(255,255,255,.12); color: rgba(255,255,255,.88);
+  border-radius: 6px; padding: 3px 11px; font-size: .75rem; font-weight: 600;
+}
 .ptag.g { background: var(--gold); color: #3a2600; }
-
-/* body */
-.pbody { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
 
 .sec-title {
   font-size: .63rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
@@ -260,7 +270,7 @@ body {
   box-shadow: 0 2px 14px rgba(0,0,0,.08); border: 1px solid var(--border);
   cursor: pointer; transition: box-shadow .2s, transform .2s;
   flex-shrink: 0;
-  width: clamp(180px, 38vw, 260px);
+  width: clamp(200px, calc(33% - 8px), 280px);
   scroll-snap-align: start;
 }
 .photo-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.14); transform: translateY(-2px); }
@@ -484,16 +494,23 @@ function studentEl(s) {
     <div class="pcard">
       <div class="phead">
         <div class="gold-bar"></div>
-        <div class="prow1">
-          <span class="badge">${s.scholarId}</span>
-          <span class="badge gold">${s.appId}</span>
+        <div class="phead-icon">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/>
+          </svg>
         </div>
-        <div class="pname">${s.name}</div>
-        <div class="ptags">
-          <span class="ptag g">${s.course}</span>
-          ${s.stream && s.stream !== s.course ? `<span class="ptag">${s.stream}</span>` : ''}
-          <span class="ptag">${s.section}</span>
-          <span class="ptag" style="opacity:.7;font-weight:500">${s.addedTime.split(' ')[0]}</span>
+        <div class="phead-info">
+          <div class="phead-ids">
+            <span class="badge">${s.scholarId}</span>
+            <span class="badge gold">${s.appId}</span>
+          </div>
+          <div class="pname">${s.name}</div>
+          <div class="ptags">
+            <span class="ptag g">${s.course}</span>
+            ${s.stream && s.stream !== s.course ? `<span class="ptag">${s.stream}</span>` : ''}
+            <span class="ptag">${s.section}</span>
+            <span class="ptag" style="opacity:.65">${s.addedTime.split(' ')[0]}</span>
+          </div>
         </div>
       </div>
     </div>
