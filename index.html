@@ -516,25 +516,29 @@ function studentEl(s) {
   </div>`;
 }
 
-/* ── Footfall ── */
-const FF_TODAY_KEY = 'ff_' + new Date().toISOString().split('T')[0];
-const FF_TOTAL_KEY = 'ff_total';
+/* ── Footfall (shared across all devices via CounterAPI) ── */
+const FF_NS = 'wws-frontdesk-2627';
+const FF_DAY = 'day-' + new Date().toISOString().split('T')[0].replace(/-/g,'');
 
-function loadFootfall() {
+async function loadFootfall() {
   try {
-    document.getElementById('ff-today').textContent = localStorage.getItem(FF_TODAY_KEY) || 0;
-    document.getElementById('ff-total').textContent = localStorage.getItem(FF_TOTAL_KEY) || 0;
+    const [td, tot] = await Promise.all([
+      fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/get`).then(r=>r.json()),
+      fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/get`).then(r=>r.json())
+    ]);
+    document.getElementById('ff-today').textContent = td.Count ?? 0;
+    document.getElementById('ff-total').textContent = tot.Count ?? 0;
   } catch(e) {}
 }
 
-function trackFootfall() {
+async function trackFootfall() {
   try {
-    const today = (parseInt(localStorage.getItem(FF_TODAY_KEY) || '0')) + 1;
-    const total = (parseInt(localStorage.getItem(FF_TOTAL_KEY) || '0')) + 1;
-    localStorage.setItem(FF_TODAY_KEY, today);
-    localStorage.setItem(FF_TOTAL_KEY, total);
-    document.getElementById('ff-today').textContent = today;
-    document.getElementById('ff-total').textContent = total;
+    const [td, tot] = await Promise.all([
+      fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/up`).then(r=>r.json()),
+      fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/up`).then(r=>r.json())
+    ]);
+    document.getElementById('ff-today').textContent = td.Count ?? 0;
+    document.getElementById('ff-total').textContent = tot.Count ?? 0;
   } catch(e) {}
 }
 
