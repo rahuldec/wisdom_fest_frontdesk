@@ -159,7 +159,7 @@ body {
 .sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
 /* photo grid */
-.pgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
+.pgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,150px)); gap:12px; justify-content:start; }
 .pitem { display:flex; flex-direction:column; gap:5px; }
 .pframe {
   aspect-ratio:3/4; background:var(--bg); border-radius:11px; overflow:hidden;
@@ -216,7 +216,7 @@ body {
 
 @media(max-width:480px){
   .pname{font-size:1.4rem}
-  .pgrid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(100px,120px))}
   .dgrid{grid-template-columns:1fr 1fr}
 }
 </style>
@@ -345,7 +345,7 @@ function sibEl(s, n) {
       </div>
       <span class="same-badge${s.same==='Yes'?'':' n'}">${s.same==='Yes'?'✓ Same school':'Other school'}</span>
     </div>
-    ${photos?`<div class="pgrid" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr))">${photos}</div>`:''}
+    ${photos?`<div class="pgrid" style="grid-template-columns:repeat(auto-fill,minmax(100px,120px));justify-content:start">${photos}</div>`:''}
   </div>`;
 }
 
