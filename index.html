@@ -37,41 +37,60 @@ body {
 }
 
 .band {
-  position: fixed; top: 0; left: 0; right: 0; height: 46vh; z-index: 0;
-  background: linear-gradient(160deg, var(--green) 0%, var(--green-mid) 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 72%, 0 100%);
+  position: fixed; top: 0; left: 0; right: 0; height: 52px; z-index: 0;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
 }
 
 .page {
   position: relative; z-index: 1; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
-  padding-top: 32px; padding-bottom: 56px; gap: 18px;
+  padding-top: 0; padding-bottom: 56px; gap: 16px;
 }
 
-/* Navbar */
-.navbar {
-  width: 100%; max-width: 860px;
+/* App bar */
+.appbar {
+  width: 100%; background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+  padding: 0 max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.appbar-inner {
+  max-width: 860px; margin: 0 auto; height: 52px;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 4px;
 }
-.nav-logo {
-  width: 68px; height: 68px; background: #fff; border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 28px rgba(0,0,0,.22), 0 0 0 5px rgba(255,255,255,.14);
-  flex-shrink: 0;
+.appbar-brand {
+  display: flex; align-items: center; gap: 10px;
 }
-.nav-logo img { width: 56px; height: 56px; object-fit: contain; }
+.appbar-logo {
+  width: 34px; height: 34px; border-radius: 50%; overflow: hidden;
+  background: #fff; flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,.22), 0 0 0 1.5px rgba(255,255,255,.35);
+}
+.appbar-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.appbar-name {
+  font-size: .82rem; font-weight: 700; color: #fff;
+  letter-spacing: -.01em; line-height: 1.1; opacity: .92;
+}
+.appbar-name small {
+  display: block; font-size: .65rem; font-weight: 500;
+  opacity: .68; letter-spacing: 0; margin-top: 1px;
+}
+.appbar-od {
+  width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,.22), 0 0 0 1.5px rgba(255,255,255,.25);
+}
+.appbar-od img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* Footer */
 .footer {
-  margin-top: 8px; font-size: .78rem; color: rgba(255,255,255,.7);
-  font-weight: 500; letter-spacing: .01em;
+  font-size: .74rem; color: var(--muted); font-weight: 500;
+  letter-spacing: .01em; padding-top: 4px;
 }
 
 /* Search card */
 .s-card {
   background: var(--card); border-radius: 24px; padding: 22px 20px;
   width: 100%; max-width: 480px; box-shadow: var(--shadow); position: relative;
+  margin-top: 16px;
 }
 .s-card::before {
   content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -236,12 +255,20 @@ body {
 <div class="band"></div>
 <div class="page">
 
-  <div class="navbar">
-    <div class="nav-logo">
-      <img src="logo.jpg" alt="Wisdom World School">
-    </div>
-    <div class="nav-logo">
-      <img src="okie-dokie.png" alt="Okie Dokie">
+  <div class="appbar">
+    <div class="appbar-inner">
+      <div class="appbar-brand">
+        <div class="appbar-logo">
+          <img src="logo.jpg" alt="Wisdom World School">
+        </div>
+        <div class="appbar-name">
+          Wisdom World School
+          <small>Student Images · 2026–27</small>
+        </div>
+      </div>
+      <div class="appbar-od">
+        <img src="okie-dokie.png" alt="Okie Dokie">
+      </div>
     </div>
   </div>
 
