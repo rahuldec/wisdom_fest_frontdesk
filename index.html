@@ -41,42 +41,41 @@ body {
 .page {
   position: relative; z-index: 1; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
-  padding-top: 76px; padding-bottom: 56px; gap: 20px;
+  padding-top: 28px; padding-bottom: 56px; gap: 20px;
 }
 
-/* App bar — fixed, sticky, always visible */
+/* Site header — prominent, diagonal band */
 .appbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-  background: linear-gradient(135deg, var(--green) 0%, #1a5c30 50%, var(--green-mid) 100%);
-  box-shadow: 0 1px 0 rgba(255,255,255,.07), 0 4px 24px rgba(0,0,0,.28);
-  padding: 0 max(24px, env(safe-area-inset-left, 0px));
-  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  width: 100%;
+  background: linear-gradient(135deg, var(--green) 0%, #1a5c30 60%, var(--green-mid) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+  padding: 28px max(28px, env(safe-area-inset-left, 0px)) 64px;
+  padding-right: max(28px, env(safe-area-inset-right, 0px));
 }
 .appbar-inner {
-  max-width: 860px; margin: 0 auto; height: 64px;
-  display: flex; align-items: center; justify-content: center; gap: 13px;
+  max-width: 860px; margin: 0 auto;
+  display: flex; align-items: center; gap: 22px;
 }
-.appbar-brand { display: flex; align-items: center; gap: 13px; }
+.appbar-brand { display: flex; align-items: center; gap: 22px; }
 .appbar-logo {
-  width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
+  width: 88px; height: 88px; border-radius: 22px;
   background: #fff; flex-shrink: 0;
-  box-shadow: 0 0 0 2.5px rgba(255,255,255,.45), 0 4px 14px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.12);
 }
-.appbar-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.appbar-text { display: flex; flex-direction: column; }
+.appbar-logo img { width: 72px; height: 72px; object-fit: contain; display: block; }
+.appbar-text { display: flex; flex-direction: column; gap: 3px; }
 .appbar-title {
-  color: #fff; font-size: 1rem; font-weight: 700; letter-spacing: -.02em;
-  line-height: 1.2;
+  color: #fff; font-size: 1.9rem; font-weight: 800; letter-spacing: -.03em;
+  line-height: 1.1; margin: 0;
 }
 .appbar-sub {
-  color: rgba(255,255,255,.6); font-size: .68rem; font-weight: 500;
-  letter-spacing: .01em; margin-top: 1px;
+  color: rgba(255,255,255,.82); font-size: .9rem; font-weight: 600;
+  letter-spacing: -.01em;
 }
-.appbar-od {
-  width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-  box-shadow: 0 0 0 2px rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.25);
+.appbar-dev {
+  color: rgba(255,255,255,.55); font-size: .76rem; font-weight: 500;
 }
-.appbar-od img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* Footer */
 .footer {
@@ -262,7 +261,9 @@ body {
         <img src="logo.jpg" alt="Wisdom World School">
       </div>
       <div class="appbar-text">
-        <span class="appbar-title">Wisdom World School</span>
+        <div class="appbar-title">Student Images</div>
+        <div class="appbar-sub">Wisdom World School</div>
+        <div class="appbar-dev">Developed by Okie Dokie</div>
       </div>
     </div>
   </div>
