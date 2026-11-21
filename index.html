@@ -326,7 +326,7 @@ body {
   box-shadow: 0 24px 64px rgba(0,0,0,.55);
 }
 .hprev.show { opacity: 1; transform: scale(1); }
-.hprev img { width: 320px; height: 320px; object-fit: cover; display: block; }
+.hprev img { width: 440px; height: 440px; object-fit: cover; display: block; }
 .hprev-lbl {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,.72));
@@ -636,10 +636,10 @@ document.addEventListener('mouseover', e => {
   hprevImg.src = img.src;
   hprevLbl.textContent = card.querySelector('.photo-card-role')?.textContent || '';
   const r = card.getBoundingClientRect();
-  const pw = 320, ph = 320, gap = 12;
+  const pw = 440, ph = 440, gap = 12;
   let x = r.right + gap;
   if (x + pw > window.innerWidth - 8) x = r.left - pw - gap;
-  let y = r.top;
+  let y = r.top - 80;
   if (y + ph > window.innerHeight - 8) y = window.innerHeight - ph - 8;
   if (y < 8) y = 8;
   hprev.style.left = x + 'px';
