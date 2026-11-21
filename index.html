@@ -580,7 +580,7 @@ function render(query) {
     return;
   }
   const hits = students.filter(s =>
-    s.scholarId.toLowerCase().includes(q)
+    s.scholarId.toLowerCase() === q
   );
   if (!hits.length) {
     area.innerHTML = `<div class="empty">
