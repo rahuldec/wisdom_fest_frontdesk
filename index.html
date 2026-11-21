@@ -628,8 +628,10 @@ window.lb = (src, lbl) => {
   document.getElementById('llbl').textContent = lbl;
   document.getElementById('lbox').classList.add('open');
 };
-document.getElementById('lclose').onclick = () => document.getElementById('lbox').classList.remove('open');
-document.getElementById('lbox').onclick = e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); };
+const closeLbox = () => document.getElementById('lbox').classList.remove('open');
+document.getElementById('lclose').onclick = closeLbox;
+document.getElementById('lbox').onclick = e => { if (e.target === e.currentTarget) closeLbox(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLbox(); });
 
 const hprev = document.getElementById('hprev');
 const hprevImg = document.getElementById('hprev-img');
