@@ -369,7 +369,7 @@ body {
       <svg class="s-ico" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
       </svg>
-      <input class="s-input" id="q" type="search" placeholder="Name or Scholar ID…" autocomplete="off" spellcheck="false">
+      <input class="s-input" id="q" type="search" placeholder="Enter Scholar ID…" autocomplete="off" spellcheck="false">
       <button class="x-btn" id="xbtn" hidden aria-label="Clear">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path d="M18 6L6 18M6 6l12 12"/>
@@ -574,15 +574,13 @@ function render(query) {
         </svg>
       </div>
       <h2>Search students</h2>
-      <p>Type a name or scholar ID to view family photos</p>
+      <p>Type a Scholar ID to view family photos</p>
       ${students.length ? `<div class="count-pill">● ${students.length} records loaded</div>` : ''}
     </div>`;
     return;
   }
   const hits = students.filter(s =>
-    s.name.toLowerCase().includes(q) ||
-    s.scholarId.toLowerCase().includes(q) ||
-    s.appId.toLowerCase().includes(q)
+    s.scholarId.toLowerCase().includes(q)
   );
   if (!hits.length) {
     area.innerHTML = `<div class="empty">
