@@ -80,29 +80,6 @@ body {
   display: flex; align-items: center; gap: 28px;
   border-left: 1px solid rgba(255,255,255,.08);
 }
-.appbar-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.appbar-stat-n {
-  font-size: 1.65rem; font-weight: 800; color: var(--gold); line-height: 1;
-}
-.appbar-stat-l {
-  font-size: .6rem; font-weight: 600; letter-spacing: .1em;
-  text-transform: uppercase; color: rgba(255,255,255,.45);
-}
-.appbar-stat-div { width: 1px; height: 36px; background: rgba(255,255,255,.12); }
-
-/* Entry button */
-.entry-btn {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--gold); color: #1a2e1a; border: none; cursor: pointer;
-  padding: 13px 28px; border-radius: 50px; font-weight: 800; font-size: 1rem;
-  letter-spacing: .02em; transition: transform .15s, box-shadow .15s, background .15s;
-  box-shadow: 0 4px 18px rgba(219,177,59,.35);
-}
-.entry-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(219,177,59,.5); }
-.entry-btn:active { transform: scale(.96); }
-.entry-btn.done { background: #4ade80; color: #052e16; box-shadow: 0 4px 18px rgba(74,222,128,.35); }
-.entry-btn svg { flex-shrink: 0; }
-.entry-row { padding: 18px 24px 4px; display: flex; align-items: center; gap: 16px; }
 
 /* Footer */
 .footer {
@@ -387,16 +364,6 @@ body {
     </div>
   </div>
   <div class="appbar-right">
-    <div class="appbar-stat">
-      <div class="appbar-stat-n" id="ff-today">—</div>
-      <div class="appbar-stat-l">Today</div>
-    </div>
-    <div class="appbar-stat-div"></div>
-    <div class="appbar-stat">
-      <div class="appbar-stat-n" id="ff-total">—</div>
-      <div class="appbar-stat-l">Total</div>
-    </div>
-    <div class="appbar-stat-div"></div>
     <img src="okie-dokie.png" alt="Okie Dokie" style="width:68px;height:68px;object-fit:contain;background:#fff;border-radius:50%;padding:5px;">
   </div>
 </div>
@@ -567,14 +534,6 @@ function studentEl(s) {
             <span class="ptag" style="opacity:.65">${s.addedTime.split(' ')[0]}</span>
           </div>
         </div>
-        <div class="entry-row">
-          <button class="entry-btn" onclick="markEntry(this)">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Allow Entry
-          </button>
-        </div>
       </div>
     </div>
     <div class="photo-strip">
@@ -584,41 +543,6 @@ function studentEl(s) {
   </div>`;
 }
 
-/* ── Footfall (shared across all devices via CounterAPI) ── */
-const FF_NS = 'wws-frontdesk-2627';
-const FF_DAY = 'day-' + new Date().toISOString().split('T')[0].replace(/-/g,'');
-
-const getCount = j => j?.Count ?? j?.count ?? j?.value ?? j?.hits ?? 0;
-const setFF = (td, tot) => {
-  document.getElementById('ff-today').textContent = td;
-  document.getElementById('ff-total').textContent = tot;
-};
-
-async function loadFootfall() {
-  try {
-    const [td, tot] = await Promise.all([
-      fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/get`).then(r=>r.json()),
-      fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/get`).then(r=>r.json())
-    ]);
-    setFF(getCount(td), getCount(tot));
-  } catch(e) {}
-}
-
-async function trackFootfall() {
-  // Immediately increment displayed values for instant feedback
-  const curToday = parseInt(document.getElementById('ff-today').textContent) || 0;
-  const curTotal = parseInt(document.getElementById('ff-total').textContent) || 0;
-  setFF(curToday + 1, curTotal + 1);
-  try {
-    const [td, tot] = await Promise.all([
-      fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/up`).then(r=>r.json()),
-      fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/up`).then(r=>r.json())
-    ]);
-    setFF(getCount(td), getCount(tot));
-  } catch(e) {}
-}
-
-loadFootfall();
 
 function render(query) {
   const area = document.getElementById('results');
@@ -654,12 +578,6 @@ function render(query) {
   area.innerHTML = hits.map(studentEl).join('');
 }
 
-window.markEntry = async (btn) => {
-  if (btn.classList.contains('done')) return;
-  btn.classList.add('done');
-  btn.innerHTML = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Entry Marked`;
-  await trackFootfall();
-};
 
 window.lb = (src, lbl) => {
   document.getElementById('limg').src = src;
