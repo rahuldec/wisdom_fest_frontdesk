@@ -318,6 +318,21 @@ body {
 }
 .same-badge.n { background: #fee2e2; color: #991b1b; }
 
+/* hover preview */
+.hprev {
+  position: fixed; z-index: 1800; pointer-events: none;
+  opacity: 0; transform: scale(.92); transition: opacity .18s, transform .18s;
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.55);
+}
+.hprev.show { opacity: 1; transform: scale(1); }
+.hprev img { width: 320px; height: 320px; object-fit: cover; display: block; }
+.hprev-lbl {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.72));
+  color: #fff; padding: 28px 14px 10px; font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+}
+
 /* lightbox */
 .lbox {
   display: none; position: fixed; inset: 0; z-index: 2000;
@@ -388,6 +403,8 @@ body {
     Crafted with ❤️ by Okie Dokie
   </div>
 </div>
+
+<div class="hprev" id="hprev"><img id="hprev-img" src="" alt=""><div class="hprev-lbl" id="hprev-lbl"></div></div>
 
 <div class="lbox" id="lbox">
   <button class="lbox-close" id="lclose">✕</button>
@@ -604,6 +621,36 @@ window.lb = (src, lbl) => {
 };
 document.getElementById('lclose').onclick = () => document.getElementById('lbox').classList.remove('open');
 document.getElementById('lbox').onclick = e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); };
+
+const hprev = document.getElementById('hprev');
+const hprevImg = document.getElementById('hprev-img');
+const hprevLbl = document.getElementById('hprev-lbl');
+let hprevTimer;
+
+document.addEventListener('mouseover', e => {
+  const card = e.target.closest('.photo-card:not(.no-click)');
+  if (!card) return;
+  const img = card.querySelector('.photo-card-img');
+  if (!img) return;
+  clearTimeout(hprevTimer);
+  hprevImg.src = img.src;
+  hprevLbl.textContent = card.querySelector('.photo-card-role')?.textContent || '';
+  const r = card.getBoundingClientRect();
+  const pw = 320, ph = 320, gap = 12;
+  let x = r.right + gap;
+  if (x + pw > window.innerWidth - 8) x = r.left - pw - gap;
+  let y = r.top;
+  if (y + ph > window.innerHeight - 8) y = window.innerHeight - ph - 8;
+  if (y < 8) y = 8;
+  hprev.style.left = x + 'px';
+  hprev.style.top = y + 'px';
+  hprev.classList.add('show');
+});
+
+document.addEventListener('mouseout', e => {
+  if (!e.target.closest('.photo-card:not(.no-click)')) return;
+  hprevTimer = setTimeout(() => hprev.classList.remove('show'), 80);
+});
 
 const qi = document.getElementById('q'), xb = document.getElementById('xbtn');
 let _st;
