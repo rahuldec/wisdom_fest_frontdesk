@@ -580,7 +580,7 @@ function render(query) {
     return;
   }
   const hits = students.filter(s =>
-    s.scholarId.toLowerCase() === q
+    s.scholarId.toLowerCase().split('/')[0].trim() === q
   );
   if (!hits.length) {
     area.innerHTML = `<div class="empty">
