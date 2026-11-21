@@ -90,6 +90,20 @@ body {
 }
 .appbar-stat-div { width: 1px; height: 36px; background: rgba(255,255,255,.12); }
 
+/* Entry button */
+.entry-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--gold); color: #1a2e1a; border: none; cursor: pointer;
+  padding: 13px 28px; border-radius: 50px; font-weight: 800; font-size: 1rem;
+  letter-spacing: .02em; transition: transform .15s, box-shadow .15s, background .15s;
+  box-shadow: 0 4px 18px rgba(219,177,59,.35);
+}
+.entry-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(219,177,59,.5); }
+.entry-btn:active { transform: scale(.96); }
+.entry-btn.done { background: #4ade80; color: #052e16; box-shadow: 0 4px 18px rgba(74,222,128,.35); }
+.entry-btn svg { flex-shrink: 0; }
+.entry-row { padding: 18px 24px 4px; display: flex; align-items: center; gap: 16px; }
+
 /* Footer */
 .footer {
   display: flex; align-items: center; gap: 8px;
@@ -383,7 +397,7 @@ body {
       <div class="appbar-stat-l">Total</div>
     </div>
     <div class="appbar-stat-div"></div>
-    <img src="okie-dokie.png" alt="Okie Dokie" style="width:48px;height:48px;object-fit:contain;opacity:.9;">
+    <img src="okie-dokie.png" alt="Okie Dokie" style="width:48px;height:48px;object-fit:contain;background:#fff;border-radius:50%;padding:4px;">
   </div>
 </div>
 
@@ -553,6 +567,14 @@ function studentEl(s) {
             <span class="ptag" style="opacity:.65">${s.addedTime.split(' ')[0]}</span>
           </div>
         </div>
+        <div class="entry-row">
+          <button class="entry-btn" onclick="markEntry(this)">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Allow Entry
+          </button>
+        </div>
       </div>
     </div>
     <div class="photo-strip">
@@ -622,8 +644,14 @@ function render(query) {
     return;
   }
   area.innerHTML = hits.map(studentEl).join('');
-  trackFootfall();
 }
+
+window.markEntry = async (btn) => {
+  if (btn.classList.contains('done')) return;
+  btn.classList.add('done');
+  btn.innerHTML = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Entry Marked`;
+  await trackFootfall();
+};
 
 window.lb = (src, lbl) => {
   document.getElementById('limg').src = src;
