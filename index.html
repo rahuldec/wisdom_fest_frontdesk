@@ -588,25 +588,33 @@ function studentEl(s) {
 const FF_NS = 'wws-frontdesk-2627';
 const FF_DAY = 'day-' + new Date().toISOString().split('T')[0].replace(/-/g,'');
 
+const getCount = j => j?.Count ?? j?.count ?? j?.value ?? j?.hits ?? 0;
+const setFF = (td, tot) => {
+  document.getElementById('ff-today').textContent = td;
+  document.getElementById('ff-total').textContent = tot;
+};
+
 async function loadFootfall() {
   try {
     const [td, tot] = await Promise.all([
       fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/get`).then(r=>r.json()),
       fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/get`).then(r=>r.json())
     ]);
-    document.getElementById('ff-today').textContent = td.Count ?? 0;
-    document.getElementById('ff-total').textContent = tot.Count ?? 0;
+    setFF(getCount(td), getCount(tot));
   } catch(e) {}
 }
 
 async function trackFootfall() {
+  // Immediately increment displayed values for instant feedback
+  const curToday = parseInt(document.getElementById('ff-today').textContent) || 0;
+  const curTotal = parseInt(document.getElementById('ff-total').textContent) || 0;
+  setFF(curToday + 1, curTotal + 1);
   try {
     const [td, tot] = await Promise.all([
       fetch(`https://api.counterapi.dev/v1/${FF_NS}/${FF_DAY}/up`).then(r=>r.json()),
       fetch(`https://api.counterapi.dev/v1/${FF_NS}/total/up`).then(r=>r.json())
     ]);
-    document.getElementById('ff-today').textContent = td.Count ?? 0;
-    document.getElementById('ff-total').textContent = tot.Count ?? 0;
+    setFF(getCount(td), getCount(tot));
   } catch(e) {}
 }
 
