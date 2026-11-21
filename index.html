@@ -325,10 +325,10 @@ body {
   transition: opacity .2s cubic-bezier(.22,1,.36,1), transform .2s cubic-bezier(.22,1,.36,1);
   border-radius: 20px; overflow: hidden;
   box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 2.5px var(--gold);
-  width: 400px;
+  width: 500px;
 }
 .hprev.show { opacity: 1; transform: scale(1) translateY(0); }
-.hprev img { width: 400px; height: 400px; object-fit: contain; display: block; background: #111; }
+.hprev img { width: 500px; height: 500px; object-fit: contain; display: block; background: #111; }
 .hprev-info {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent 0%, rgba(10,30,15,.88) 55%);
@@ -649,7 +649,7 @@ document.addEventListener('mouseover', e => {
   hprevRole.textContent = card.querySelector('.photo-card-role')?.textContent || '';
   hprevName.textContent = card.querySelector('.photo-card-name')?.textContent || '';
   const r = card.getBoundingClientRect();
-  const pw = 400, ph = 400, gap = 16;
+  const pw = 500, ph = 500, gap = 16;
   let x = r.right + gap;
   if (x + pw > window.innerWidth - 8) x = r.left - pw - gap;
   let y = r.top + (r.height / 2) - (ph / 2);
